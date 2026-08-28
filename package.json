@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/AkixxXX-sketch/blip-bot#readme",
   "dependencies": {
+    "@google/genai": "^2.19.0",
     "@slack/bolt": "^5.0.0",
     "dotenv": "^17.4.2"
   }

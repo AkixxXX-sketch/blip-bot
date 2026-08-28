@@ -1,7 +1,7 @@
-require('dotenv').config(); // Basically import the dotenv package and call the config at the same time to load the .env
-
-const { App } = require('@slack/bolt'); // Import the bolt package but only the App class from it (and name it App)
-
+import 'dotenv/config'; // Basically import the dotenv package and call the config at the same time to load the .env
+import { GoogleGenAI} from "@google/genai" //import the GoogleGenAI class from the @google/genai package  
+import { App } from '@slack/bolt'; // Import the bolt package but only the App class from it (and name it App)
+const ai = new GoogleGenAI(process.env.GEMINI_API_KEY); //create a new instance of the GoogleGenAI class and pass the API key from the .env file to it. This will allow us to use the Google Gemini API to generate text
 const app = new App({  //creation of a new instance of the app class 
     token: process.env.SLACK_BOT_TOKEN,
     appToken: process.env.SLACK_APP_TOKEN,
@@ -23,7 +23,16 @@ app.command('/blip-weather', async ({ command, ack, say }) => {
     const weatherData = await weather.text();
     await say({text: `The weather in ${place} is: ${weatherData}`});
 });
-
+app.command('/blip-ask', async ({ command, ack, say }) => { 
+    await ack();
+    const question = command.text; //get the text after the command and store it as question
+    const response = await ai.models.generateContent({ //use the Google Gemini API to generate a response to the question
+        model: "gemini-3.5-flash-lite", //the model to use
+        contents: `Respond to the following question in minimal words, unless specified otherwise: ${question}`, //the question to ask
+        temperature: 0.4 //the temperature to use
+    });
+    await say({text: `The answer to your question is: ${response.text}`});
+});
 
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
