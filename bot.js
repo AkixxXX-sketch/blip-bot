@@ -16,6 +16,14 @@ app.command('/blip-ping', async ({ command, ack, respond }) => {  //so we call t
     const latency = Date.now() - start; //measure latency by subtracting the start time from the current time
     await respond({text: `Pong\nLatency: ${latency}ms`}); //respond with pong and latency
 });  
+app.command('/blip-weather', async ({ command, ack, say }) => { 
+    await ack();
+    const place = command.text; //get the text after the command and store it as place
+    const weather = await fetch(`https://wttr.in/${place}?format=%C+%t+%f`); //fetch the weather from the wttr.in 
+    const weatherData = await weather.text();
+    await say({text: `The weather in ${place} is: ${weatherData}`});
+});
+
 
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
