@@ -1,3 +1,6 @@
 LICENSE
 .venv
 .env
+.env*
+node_modules/
+*.log
