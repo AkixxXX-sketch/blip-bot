@@ -33,7 +33,31 @@ app.command('/blip-ask', async ({ command, ack, say }) => {
     });
     await say({text: `The answer to your question is: ${response.text}`});
 });
-
+app.command('/blip-summ', async ({ command, ack, say, client }) => {
+    await ack();
+    const users = await client.users.list(); //get a list of all users in the workspace
+    const names = Object.fromEntries(
+        users.members.map(user => [
+            user.id, //get the user id and map it to the display name or real name or username of the user
+            user.profile.display_name || user.real_name || user.name //get the display name or real name or username of the user
+        ])
+    )
+    const [qual, msgs] = command.text.split('|'); //split the text after the command into an array of arguments    
+    if (!msgs){ //if there is no message arg fallback to default
+        const result = await client.conversations.history({
+            channel: command.channel_id, //get the channel id from the command
+            limit: 10 //get the last 10 messages from the channel
+        })
+        const messages = result.messages
+            .map(m => `${names[m.user]}: ${m.text}`) //map the messages to a string with the user and text
+            .join('\n');
+        const response = await ai.models.generateContent({
+            model: "gemini-3.5-flash-lite",
+            contents: `Summarize the following messages in ${qual || 'short'} quantity of words:${messages}. Your summary must not lose any important information from the messages.`, //the messages to summarize
+        });
+        await say({text: `The summary of the messages is: ${response.text}`});
+    } 
+});
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
     console.log('⚡️ Bolt app is running!'); //log to the console that the bot is running
