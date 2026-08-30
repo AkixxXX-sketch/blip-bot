@@ -43,34 +43,23 @@ app.command('/blip-summ', async ({ command, ack, say, client }) => {
         ])
     )
     const [qual, msgs] = command.text.split('|'); //split the text after the command into an array of arguments    
-    const limit = Number(msgs); //set the limit to the number of messages to summarize
-    if (!msgs){ //if there is no message arg fallback to default
-        const result = await client.conversations.history({
-            channel: command.channel_id, //get the channel id from the command
-            limit: 10 //get the last 10 messages from the channel
-        })
-        const messages = result.messages
-            .map(m => `${names[m.user]}: ${m.text}`) //map the messages to a string with the user and text
-            .join('\n');
-        const response = await ai.models.generateContent({
-            model: "gemini-3.5-flash-lite",
-            contents: `Summarize the following messages in ${qual || 'short'} quantity of words:${messages}. Your summary must not lose any important information from the messages.`, //the messages to summarize
-        });
-        await say({text: `The summary of the messages is: ${response.text}`});
-    } else { //if there is a message arg use it instead of the last 10 messages
-        const result = await client.conversations.history({
-            channel: command.channel_id, //get the channel id from the command
-            limit: limit //get the last {msgs} messages from the channel
-        });
-        const messages = result.messages
-            .map(m => `${names[m.user]}: ${m.text}`) //map the messages to a string with the user and text
-            .join('\n');
-        const response = await ai.models.generateContent({
-            model: "gemini-3.5-flash-lite",
-            contents: `Summarize the following messages in ${qual || 'short'} quantity of words:${messages}. Your summary must not lose any important information from the messages.`, //the messages to summarize
-        });
-        await say({text: `The summary of the messages is: ${response.text}`});
-    } 
+    const limit = Number(msgs) || 20; //set the limit to the number of messages to summarize
+    const msghist = await client.conversations.history({ //get the message history of the channel
+        channel: command.channel_id, //the channel id of the channel where the command was called
+        limit: limit //the limit of messages to get
+    });
+    //join the messages into a single string
+    const parsedmsg = msghist.messages
+    .reverse() //slack gives newest to oldest so we fix that
+    .map(msg => `${names[msg.user] || msg.user}: ${msg.text}`)
+    .join('\n'); //map the messages to a string of text with the user name and message text
+    
+    const response = await ai.models.generateContent({ //use the Google Gemini API to generate a summary of the messages
+        model: "gemini-3.5-flash-lite", //the model to use
+        contents: `Summarize the following conversation. Keep it ${qual}, while preserving the key information: ${parsedmsg}`, //the text to summarize
+        temperature: 0.4 //the temperature to use
+    });
+    await say({text: `The summary of the last ${msghist.messages.lenght} messages is: ${response.text}`}); //respond with the summary
 });
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
