@@ -59,7 +59,7 @@ app.command('/blip-summ', async ({ command, ack, say, client }) => {
         contents: `Summarize the following conversation. Keep it ${qual}, while preserving the key information: ${parsedmsg}`, //the text to summarize
         temperature: 0.4 //the temperature to use
     });
-    await say({text: `The summary of the last ${msghist.messages.lenght} messages is: ${response.text}`}); //respond with the summary
+    await say({text: `The summary of the last ${msghist.messages.length} messages is: ${response.text}`}); //respond with the summary
 });
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
