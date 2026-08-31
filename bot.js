@@ -8,8 +8,8 @@ const app = new App({  //creation of a new instance of the app class
     socketMode: true
 }) //App is a blueprint (Class), app is object . we are changing the certain "keys" of the app class to our own values
 function parseTime(time) { //function to parse the time input by the user
-    const regex = /^(\d+)([smh])$/;
-    const match = time.match(regex);
+    const regex = /^(\d+)([smh])$/; //regex to match the time format (e.g., 10s, 5m, 2h)
+    const match = time.match(regex); 
     if (!match) return null;
     const value = parseInt(match[1], 10);
     const unit = match[2];
@@ -130,6 +130,65 @@ app.command('/blip-fortune', async ({ command, ack, say }) => {
     await say({text: `Your fortune: ${response.text}
         `});    
 });
+app.command('/blip-help', async ({ command, ack, say }) => {
+    await ack();
+    const helpMessage = `
+    Here are the available commands:
+    
+    1. /blip-ping - Check the bot's latency.
+    2. /blip-weather [location] - Get the current weather for a specified location.
+    3. /blip-ask [question] - Ask a question and get an AI-generated response.
+    4. /blip-summ [quality] | [number of messages] - Summarize the last N messages in the channel with specified quality (e.g., "brief", "detailed").
+    5. /blip-timer [time] - Set a timer for a specified duration (e.g., "10s", "5m", "2h").
+    6. /blip-fortune - Get a random, weird, or funny fortune.
+    7. /blip-help - Display this help message.
+    
+    Note: For commands that require additional input, please provide the necessary information after the command.
+    `;
+    await say({text: helpMessage});
+});
+app.command('/blip-define', async ({ command, ack, say }) => {
+    await ack();
+    const word = command.text.trim();
+    if (!word) {
+        await say({text: `Please provide a word to define. Usage: /blip-define [word]`});
+        return;
+    }
+    const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash-lite",
+        contents: `Provide a clear and concise definition for the word: "${word}".`,
+        temperature: 0.4
+    });
+    await say({text: `Definition of "${word}": ${response.text}`});
+});
+app.command('/blip-rate', async ({ command, ack, say }) => {
+    await ack();
+    const thing = command.text.trim();
+    if (!thing) {
+        await say({text:'Rate what💀'});
+        return;
+
+    const rating = Math.random() * 10; // Generate a random rating between 0 and 10
+    const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash-lite",
+        contents: `
+        Rate this: "${thing}"
+        Give a completely ridiculous but coherent (somewhat) for the rating.
+        Rules:
+        - The rating is ${rating}/10.
+        - Treat whatever is being rated as valid, whether it is a person, object, idea, food, event, animal, code, etc.
+        - Do not question what is being rated.
+        - Do not change the rating.
+        - Be unpredictable and funny.
+        - The reasoning should be short.
+        - Do not be genuinely insulting or cruel toward a person.
+        - Output ONLY the reason for the rating, not the rating itself.
+        `,
+        temperature: 1.0
+    });
+    await say({text: `Rating for "${thing}": ${rating.toFixed(1)}/10\nReason: ${response.text}`});
+        
+    }
 app.event('app_mention', async ({ event, say }) => {
     await say(`Hello <@${event.user}>! How can I assist you today?`);
     console.log(`App was mentioned by user ${event.user} in channel ${event.channel}`);
