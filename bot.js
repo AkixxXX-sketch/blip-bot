@@ -62,7 +62,7 @@ app.command('/blip-summ', async ({ command, ack, say, client }) => {
     await say({text: `The summary of the last ${msghist.messages.length} messages is: ${response.text}`}); //respond with the summary
 });
 
-app.command('blip-timer', async ({ command, ack, say }) => {
+app.command('/blip-timer', async ({ command, ack, say }) => {
     await ack();
     const time = command.text;
     const timeInMs = parseTime(time);
