@@ -80,7 +80,7 @@ app.command('/blip-fortune', async ({ command, ack, say }) => {
     const response = await ai.models.generateContent({
         model: "gemini-3.5-flash-lite",
         contents: `Generate a goofy, weird or wacky fortune that is short and one line. For example, "Something involving a USB cable will happen soon."`,
-        temperature: 0.4
+        temperature: 0.7
     });
     await say({text: `Your fortune: ${response.text}
         `});    
