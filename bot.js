@@ -167,7 +167,7 @@ app.command('/blip-rate', async ({ command, ack, say }) => {
     if (!thing) {
         await say({text:'Rate what💀'});
         return;
-
+    }
     const rating = Math.random() * 10; // Generate a random rating between 0 and 10
     const response = await ai.models.generateContent({
         model: "gemini-3.5-flash-lite",
@@ -187,8 +187,7 @@ app.command('/blip-rate', async ({ command, ack, say }) => {
         temperature: 1.0
     });
     await say({text: `Rating for "${thing}": ${rating.toFixed(1)}/10\nReason: ${response.text}`});
-        
-    }
+});
 app.event('app_mention', async ({ event, say }) => {
     await say(`Hello <@${event.user}>! How can I assist you today?`);
     console.log(`App was mentioned by user ${event.user} in channel ${event.channel}`);
