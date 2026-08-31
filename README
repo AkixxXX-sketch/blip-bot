@@ -1,6 +1,6 @@
 # blip-bot
 
-A Slack bot built with [Slack Bolt](https://slack.dev/bolt-js/) (Socket Mode) and Google's Gemini API. Ping checks, weather lookups, quick AI answers, and channel summarization — all as slash commands.
+A Slack bot built with [Slack Bolt](https://slack.dev/bolt-js/) (Socket Mode) and Google's Gemini API. Ping checks, weather lookups, quick AI answers, channel summarization, timers, fortunes, and a friendly app mention reply — all as slash commands and Slack events.
 
 ## Stack
 
@@ -14,10 +14,18 @@ A Slack bot built with [Slack Bolt](https://slack.dev/bolt-js/) (Socket Mode) an
 
 | Command | Description |
 |---|---|
-| `/blip-ping` | Replies with `Pong` and round-trip latency (visible only to caller) |
+| `/blip-ping` | Replies with `Pong` and round-trip latency (visible only to the caller) |
 | `/blip-weather <place>` | Fetches current weather for `<place>` from wttr.in |
 | `/blip-ask <question>` | Sends the question to Gemini and returns a short answer |
 | `/blip-summ <style> \| <count>` | Summarizes the last `<count>` messages in the channel (default 20) in the given style/tone |
+| `/blip-timer <10s|5m|2h>` | Sets a timer and posts a follow-up message when time is up |
+| `/blip-fortune` | Generates a short goofy fortune from Gemini |
+
+## Events
+
+| Event | Description |
+|---|---|
+| `app_mention` | Replies with a friendly greeting when the bot is mentioned in a channel |
 
 ## Setup
 
