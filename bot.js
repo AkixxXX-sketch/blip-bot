@@ -142,6 +142,8 @@ app.command('/blip-help', async ({ command, ack, say }) => {
     5. /blip-timer [time] - Set a timer for a specified duration (e.g., "10s", "5m", "2h").
     6. /blip-fortune - Get a random, weird, or funny fortune.
     7. /blip-help - Display this help message.
+    8. /blip-define [word] - Get a clear and concise definition for a specified word.
+    9. /blip-rate [thing] - Get a random rating and a humorous reason for the rating of a specified thing.
     
     Note: For commands that require additional input, please provide the necessary information after the command.
     `;
