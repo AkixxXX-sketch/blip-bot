@@ -104,6 +104,7 @@ app.command('/blip-fortune', async ({ command, ack, say }) => {
 });
 app.event('app_mention', async ({ event, say }) => {
     await say(`Hello <@${event.user}>! How can I assist you today?`);
+    console.log(`App was mentioned by user ${event.user} in channel ${event.channel}`);
 });
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
