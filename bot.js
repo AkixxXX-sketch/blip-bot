@@ -61,6 +61,23 @@ app.command('/blip-summ', async ({ command, ack, say, client }) => {
     });
     await say({text: `The summary of the last ${msghist.messages.length} messages is: ${response.text}`}); //respond with the summary
 });
+
+app.command('blip-timer', async ({ command, ack, say }) => {
+    await ack();
+    const time = command.text;
+    const timeInMs = parseTime(time);
+    if (timeInMs === null) {
+        await say({text: `Invalid time format. Please use a format like "10s", "5m", or "2h".`});
+        return;
+    }
+    await say({text: `Timer set for ${time}. I will notify you when the time is up.`});
+    setTimeout(async () => {
+        await say({text: `⏰ Time's up! Your ${time} timer has ended.`});
+    }, timeInMs);
+});
+app.event('app_mention', async ({ event, say }) => {
+    await say(`Hello <@${event.user}>! How can I assist you today?`);
+});
 (async() => { // basically a function that is called immediately and calls the bot
     await app.start(); //start the app
     console.log('⚡️ Bolt app is running!'); //log to the console that the bot is running
