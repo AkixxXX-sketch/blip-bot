@@ -94,10 +94,38 @@ app.command('/blip-timer', async ({ command, ack, say }) => {
 });
 app.command('/blip-fortune', async ({ command, ack, say }) => {
     await ack();
+    const styles = [
+    "an oddly specific prediction",
+    "a bizarre but harmless event",
+    "a ridiculous prediction about technology",
+    "a strange coincidence",
+    "an absurd prediction involving food",
+    "a completely unexpected personal prophecy",
+    "a prediction that sounds profound but is actually stupid",
+    "a mundane event described as if it were destiny",
+    "a prediction involving an object",
+    "a surreal but coherent prediction"
+    ];
+    const randomStyle = styles[Math.floor(Math.random() * styles.length)];
     const response = await ai.models.generateContent({
         model: "gemini-3.5-flash-lite",
-        contents: `Generate a goofy, weird or wacky fortune that is short and one line. For example, "Something involving a USB cable will happen soon."`,
-        temperature: 0.7
+        contents: `Generate ONE short fortune.
+
+            Style: ${randomStyle}
+
+            Rules:
+            - Exactly one sentence.
+            - Grammatically coherent.
+            - Must be understandable.
+            - Must be weird or funny.
+            - Avoid fortune-cookie clichés.
+            - Do not use animals judging people.
+            - Do not mention raccoons, pigeons, geese, fashion, life choices, or specific clock times.
+            - Do not explain anything.
+            - Output only the fortune.
+            `,
+
+        temperature: 1
     });
     await say({text: `Your fortune: ${response.text}
         `});    
