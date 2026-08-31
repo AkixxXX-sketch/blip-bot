@@ -7,6 +7,23 @@ const app = new App({  //creation of a new instance of the app class
     appToken: process.env.SLACK_APP_TOKEN,
     socketMode: true
 }) //App is a blueprint (Class), app is object . we are changing the certain "keys" of the app class to our own values
+function parseTime(time) { //function to parse the time input by the user
+    const regex = /^(\d+)([smh])$/;
+    const match = time.match(regex);
+    if (!match) return null;
+    const value = parseInt(match[1], 10);
+    const unit = match[2];
+    switch (unit) {
+        case 's':
+            return value * 1000;
+        case 'm':
+            return value * 60 * 1000;
+        case 'h':
+            return value * 60 * 60 * 1000;
+        default:
+            return null;
+    }
+}
 
 app.command('/blip-ping', async ({ command, ack, respond }) => {  //so we call the method command of the app object. argument one is the command name
 // the second argument is a function that is defined right there with () => {} the function has 3 parameters command ack and say
