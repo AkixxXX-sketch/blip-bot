@@ -75,6 +75,16 @@ app.command('blip-timer', async ({ command, ack, say }) => {
         await say({text: `⏰ Time's up! Your ${time} timer has ended.`});
     }, timeInMs);
 });
+app.command('/blip-fortune', async ({ command, ack, say }) => {
+    await ack();
+    const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash-lite",
+        contents: `Generate a goofy, weird or wacky fortune that is short and one line. For example, "Something involving a USB cable will happen soon."`,
+        temperature: 0.4
+    });
+    await say({text: `Your fortune: ${response.text}
+        `});    
+});
 app.event('app_mention', async ({ event, say }) => {
     await say(`Hello <@${event.user}>! How can I assist you today?`);
 });
