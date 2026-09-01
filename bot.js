@@ -66,9 +66,22 @@ app.command('/blip-summ', async ({ command, ack, say, client }) => {
         limit: limit //the limit of messages to get
     });
     //join the messages into a single string
+    console.log(JSON.stringify(msghist.messages, null, 2));
     const parsedmsg = msghist.messages
     .reverse() //slack gives newest to oldest so we fix that
-    .map(msg => `${names[msg.user] || msg.user}: ${msg.text}`)
+    .map(msg => {
+        const name = names[msg.user] || 'Unknown User'; //get the name of the user who sent the message
+        const text = msg.text
+        .replace(
+            /<@([A-Z0-9]+)>/g, //regex to match the user mentions in the message
+            (_, userId) => names[userId] || 'Unknown User'
+        )
+        .replace(
+            /`(U[A-Z0-9]+)`/g, //regex to match the user mentions in the message
+            (_, userId) => names[userId] || 'Unknown User'
+        );
+        return `${name}: ${text}`
+    })
     .join('\n'); //map the messages to a string of text with the user name and message text
     
     const response = await ai.models.generateContent({ //use the Google Gemini API to generate a summary of the messages
