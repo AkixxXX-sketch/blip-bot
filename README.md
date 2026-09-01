@@ -1,34 +1,34 @@
 # blip-bot
 
-A Slack bot built with [Slack Bolt](https://slack.dev/bolt-js/) (Socket Mode) and Google's Gemini API. Ping checks, weather lookups, quick AI answers, channel summarization, timers, fortunes, a word definition command, a rating command, and a friendly app mention reply — all as slash commands and Slack events.
+Blip-bot is a Slack bot for quick everyday stuff: ping checks, weather, short AI answers, channel summaries, timers, goofy fortunes, definitions, ratings, and a friendly reply when you mention it.
 
-## Stack
+## What it uses
 
 - **Runtime:** Node.js
-- **Slack integration:** `@slack/bolt` (Socket Mode)
-- **AI:** `@google/genai` — `gemini-3.5-flash-lite`
+- **Slack:** `@slack/bolt` in Socket Mode
+- **AI:** `@google/genai` with `gemini-3.5-flash-lite`
 - **Weather:** [wttr.in](https://wttr.in)
 - **Config:** `dotenv`
 
 ## Commands
 
-| Command | Description |
+| Command | What it does |
 |---|---|
-| `/blip-ping` | Replies with `Pong` and round-trip latency (visible only to the caller) |
-| `/blip-weather <place>` | Fetches current weather for `<place>` from wttr.in |
-| `/blip-ask <question>` | Sends the question to Gemini and returns a short answer |
-| `/blip-summ <style> \| <count>` | Summarizes the last `<count>` messages in the channel (default 20) in the given style/tone |
-| `/blip-timer <10s|5m|2h>` | Sets a timer and posts a follow-up message when time is up |
-| `/blip-fortune` | Generates a short goofy fortune from Gemini |
-| `/blip-define <word>` | Generates a concise definition for a word |
-| `/blip-rate <thing>` | Gives a playful rating and short reason for anything |
-| `/blip-help` | Displays the help message |
+| `/blip-ping` | Replies with `Pong` and shows the latency only to you |
+| `/blip-weather <place>` | Shows the current weather for `<place>` |
+| `/blip-ask <question>` | Sends your question to Gemini and returns a short answer |
+| `/blip-summ <style> \| <count>` | Summarizes the last `<count>` messages in the channel in the style you want |
+| `/blip-timer <10s|5m|2h>` | Sets a timer and sends a follow-up when it ends |
+| `/blip-fortune` | Gives you a weird little fortune |
+| `/blip-define <word>` | Gives a short definition of a word |
+| `/blip-rate <thing>` | Rates something and gives a funny reason why |
+| `/blip-help` | Shows the help message |
 
 ## Events
 
-| Event | Description |
+| Event | What it does |
 |---|---|
-| `app_mention` | Replies with a friendly greeting when the bot is mentioned in a channel |
+| `app_mention` | Greets you when the bot is mentioned in a channel |
 
 ## Setup
 
@@ -46,7 +46,7 @@ SLACK_APP_TOKEN=xapp-your-app-token
 GEMINI_API_KEY=your-gemini-api-key
 ```
 
-Your Slack app needs **Socket Mode** enabled (that's what `SLACK_APP_TOKEN` is for) plus the slash commands above registered, and bot scopes for reading channel history and listing users (`channels:history`, `users:read`, `commands`, `chat:write`, etc.).
+Make sure your Slack app has Socket Mode enabled and the needed slash commands and bot scopes set up.
 
 ## Run
 
